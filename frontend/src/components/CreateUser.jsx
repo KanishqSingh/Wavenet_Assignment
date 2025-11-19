@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUser} from '../api/users.js'
+import { createUser } from '../api/users.js';
 import { useAuth } from "../contexts/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
@@ -15,10 +15,7 @@ const CreateUser = () => {
 
   const [err, setErr] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [login, setLogin] = useState(false);
   const navigate = useNavigate();
-
-
 
   const allowedRoles = {
     SUPERADMIN: ["ADMIN"],
@@ -35,13 +32,10 @@ const CreateUser = () => {
 
     try {
       const res = await createUser(form, token);
-      console.log(res);
 
       if (res.user) {
         setSuccess("User created successfully!");
         setForm({ name: "", email: "", password: "", role: "" });
-        setLogin(true)
-      
       } else {
         setErr(res.message || "Creation failed");
       }
@@ -51,56 +45,82 @@ const CreateUser = () => {
   };
 
   return (
-    <div style={{ maxWidth: "400px" }}>
-      <h2>Create User</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-6">Create User</h2>
 
-      {user && <p>Logged in as: <b>{user.role}</b></p>}
+        {/* {user && (
+          <p className="text-center mb-4 text-gray-700">
+            Logged in as: <b>{user.role}</b>
+          </p>
+        )} */}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
+          <input
+            type="text"
+            placeholder="Name"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
 
-        <select
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-        >
-          <option value="">Select Role</option>
-          {availableRoles.map((r) => (
-            <option key={r} value={r}>{r}</option>
-          ))}
-        </select>
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
 
-        <button type="submit">Create User</button>
-      </form>
+          <select
+            className="w-full px-4 py-2 border rounded-lg bg-white focus:ring-2 focus:ring-blue-400 outline-none"
+            value={form.role}
+            onChange={(e) => setForm({ ...form, role: e.target.value })}
+          >
+            <option value="">Select Role</option>
+            {availableRoles.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
 
-      {err && <div style={{ color: "red" }}>{err}</div>}
-      {success && <div style={{ color: "green" }}>{success}</div>}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Create User
+          </button>
+        </form>
 
-      <button onClick={() => {navigate('/')}}>login</button>
+        {err && (
+          <div className="mt-3 text-red-600 text-center font-medium">
+            {err}
+          </div>
+        )}
 
+        {success && (
+          <div className="mt-3 text-green-600 text-center font-medium">
+            {success}
+          </div>
+        )}
 
-
-      
-
-      
+        <div className="text-center mt-6">
+          <button
+            onClick={() => navigate("/")}
+            className="text-blue-600 hover:underline"
+          >
+            Back to Login
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

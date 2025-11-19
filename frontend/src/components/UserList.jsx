@@ -1,4 +1,3 @@
-// src/components/UserList.jsx
 import React, { useEffect, useState } from "react";
 import { getUsers, updateUserRole, deleteUser } from "../api/users";
 import { useAuth } from "../contexts/AuthContext";
@@ -24,7 +23,6 @@ const UserList = () => {
     loadUsers();
   }, []);
 
-  // EDIT — Save
   const handleSaveEdit = async () => {
     try {
       await updateUserRole(editingUser._id, newRole, token);
@@ -35,7 +33,6 @@ const UserList = () => {
     }
   };
 
-  // DELETE
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
 
@@ -48,65 +45,89 @@ const UserList = () => {
   };
 
   return (
-    <div style={{ marginTop: 20 }}>
-      <h3>Users</h3>
+    <div className="mt-10 px-6">
+      <h3 className="text-3xl font-bold text-gray-800 mb-6">Users</h3>
 
-      <table border="1" cellPadding="10" style={{ marginTop: 10 }}>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>UserID</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {users?.map((u) => (
-            <tr key={u._id}>
-              <td>{u.name}</td>
-              <td>{u.email}</td>
-              <td>{u.role}</td>
-              <td>{u.userId}</td>
-              <td>
-                <button onClick={() => { setEditingUser(u); setNewRole(u.role); }}>
-                  Edit
-                </button>
-
-                <button style={{ marginLeft: 10 }} onClick={() => handleDelete(u._id)}>
-                  Delete
-                </button>
-              </td>
+      <div className="overflow-x-auto shadow-md rounded-lg">
+        <table className="w-full border border-gray-300 bg-white">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="px-4 py-2 border">Name</th>
+              <th className="px-4 py-2 border">Email</th>
+              <th className="px-4 py-2 border">Role</th>
+              <th className="px-4 py-2 border">UserID</th>
+              <th className="px-4 py-2 border">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {users?.map((u) => (
+              <tr key={u._id} className="text-center">
+                <td className="px-4 py-2 border">{u.name}</td>
+                <td className="px-4 py-2 border">{u.email}</td>
+                <td className="px-4 py-2 border">{u.role}</td>
+                <td className="px-4 py-2 border">{u.userId}</td>
+                <td className="px-4 py-2 border">
+                  <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    onClick={() => {
+                      setEditingUser(u);
+                      setNewRole(u.role);
+                    }}
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="ml-3 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                    onClick={() => handleDelete(u._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* EDIT MODAL */}
       {editingUser && (
-        <div style={{
-          padding: 20,
-          marginTop: 20,
-          border: "2px solid black",
-          width: 300
-        }}>
-          <h4>Edit User Role</h4>
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-xl shadow-xl w-80">
+            <h4 className="text-xl font-bold mb-3">Edit User Role</h4>
 
-          <p>Name: {editingUser.name}</p>
+            <p className="text-gray-600 mb-2">
+              Name: <span className="font-semibold">{editingUser.name}</span>
+            </p>
 
-          <select value={newRole} onChange={(e) => setNewRole(e.target.value)}>
-            <option value="SUPERADMIN">SUPERADMIN</option>
-            <option value="ADMIN">ADMIN</option>
-            <option value="UNITMANAGER">UNITMANAGER</option>
-            <option value="USER">USER</option>
-          </select>
+            <select
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              className="w-full p-2 border rounded-lg mb-4"
+            >
+              <option value="SUPERADMIN">SUPERADMIN</option>
+              <option value="ADMIN">ADMIN</option>
+              <option value="UNITMANAGER">UNITMANAGER</option>
+              <option value="USER">USER</option>
+            </select>
 
-          <br /><br />
-          <button onClick={handleSaveEdit}>Save</button>
-          <button onClick={() => setEditingUser(null)} style={{ marginLeft: 10 }}>
-            Cancel
-          </button>
+            <div className="flex justify-end">
+              <button
+                onClick={handleSaveEdit}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >
+                Save
+              </button>
+
+              <button
+                onClick={() => setEditingUser(null)}
+                className="ml-3 px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
